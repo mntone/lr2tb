@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale: 1">
+    <title>たてがきめーかー(仮)</title>
+    <link rel="stylesheet" href="app.css" type="text/css">
+    <script src="Scripts/knockout-3.1.0.js"></script>
+    <script src="appx.min.js"></script>
+</head>
+<body>
+    <header><h1>たてがきめーかー(仮)</h1></header>
+
+    <div id="content">
+        <h2>Text</h2>
+        <input type="text" data-bind="value: source, valueUpdate: 'keydown'">
+
+        <h2>Result</h2>
+        <p data-bind="html: result"></p>
+        <input type="button" data-bind="click: openTweetPage" value="ツイート">
+
+        <h2>Update</h2>
+        <ul>
+            <li>2014年7月11日 初版リリース</li>
+        </ul>
+    </div>
+
+    <footer><h6>Copyright (C) 2014 mntone All rights reserved. Thanks to <a href="https://twitter.com/ch3cooh">@ch3cooh</a>.</h6></footer>
+</body>
+</html>

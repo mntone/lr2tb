@@ -30,19 +30,26 @@ html, body, header, footer, div, p {
 	padding: 0;
 }
 
+input {
+	-moz-box-sizing: border;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
 @-ms-viewport {
 	width: device-width;
 }
 
 body {
 	.default-font;
-	width: 100%;
-	max-width: 640px;
-	margin: 0 auto;
+	padding: 0 20px;
+}
 
-	@media (max-width: 640px) {
-		width: auto;
-		margin: 0 20px;
+@media (min-width: 640px) {
+	body {
+		width: 640px;
+		margin: 0 auto;
+		padding: 0;
 	}
 }
 

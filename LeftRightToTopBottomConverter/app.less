@@ -72,8 +72,19 @@ header > h1 {
 	}
 
 	& > p {
-		font-family: monospace;
+		overflow-y: hidden;
+		overflow-x: scroll;
+		font-family: Consolas, "ＭＳ ゴシック", monospace;
 		line-height: 1;
+		white-space: nowrap;
+	}
+
+	& > dl > dd {
+		margin-bottom: .5em;
+	}
+
+	& > dl > dt + dt {
+		margin-top: .5em;
 	}
 }
 

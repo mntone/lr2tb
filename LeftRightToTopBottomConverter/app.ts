@@ -5,13 +5,20 @@ class IndexPageViewModel
 {
 	private converter: LeftRightToTopBottomConverter;
 
-	private source: KnockoutObservable<string> = ko.observable( "“日本語ﾃｽﾄ”🐱ABO(略)…" );
-	private result: KnockoutComputed<string>;
+	source: KnockoutObservable<string> = ko.observable( "“日本語ﾃｽﾄ”🐱ABO(略)…" );
+	result: KnockoutComputed<string>;
+
+	maximumCharactersOfALine: KnockoutObservable<number>;
+	isLineSpaceEnabled: KnockoutObservable<boolean>;
 
 	constructor()
 	{
 		this.converter = new LeftRightToTopBottomConverter();
 		this.converter.setTemplateNewLine( "<br>" );
+
+		this.maximumCharactersOfALine = this.converter.maximumCharactersOfALine;
+		this.isLineSpaceEnabled = this.converter.isLineSpaceEnabled;
+
 		this.result = ko.computed( () => this.converter.convert( this.source() ) ).extend( {
 			timeout: 300
 		});

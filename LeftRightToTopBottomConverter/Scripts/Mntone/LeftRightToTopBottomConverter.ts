@@ -2,55 +2,175 @@
 
 class LeftRightToTopBottomConverter
 {
-	private templateTopLeftCorner: string = "┏";
-	private templateTopCenter: string = "┷";
-	private templateTopRightCorner: string = "┓";
-	private templateTop: string = "━";
+	templateTopLeftCorner: KnockoutObservable<string> = ko.observable( "┏" );
+	templateTopRightCorner: KnockoutObservable<string> = ko.observable( "┓" );
+	templateBottomRightCorner: KnockoutObservable<string> = ko.observable( "┛" );
+	templateBottomLeftCorner: KnockoutObservable<string> = ko.observable( "┗" );
 
-	private templateBottomLeftCorner: string = "╰̚";
-	private templateBottomCenter: string = "━";
-	private templateBottomRightCorner: string = "┛⁾⁾";
-	private templateBottom: string = "━";
+	templateLeftCenter: KnockoutObservable<string> = ko.observable( "┃" );
+	templateTopCenter: KnockoutObservable<string> = ko.observable( "┷" );
+	templateRightCenter: KnockoutObservable<string> = ko.observable( "┃" );
+	templateBottomCenter: KnockoutObservable<string> = ko.observable( "━" );
 
-	private templateLeft: string = "┃";
-	private templateRight: string = "┃";
+	templateLeft: KnockoutObservable<string> = ko.observable( "┃" );
+	templateTop: KnockoutObservable<string> = ko.observable( "━" );
+	templateRight: KnockoutObservable<string> = ko.observable( "┃" );
+	templateBottom: KnockoutObservable<string> = ko.observable( "━" );
 
 	private templateNewLine: string = "\n";
+
+	private templateFullSpace = "　";
+	private templateHalfSpace = " ";
+	private templateQuarterSpace = " ";
+
+	maximumCharactersOfALine: KnockoutObservable<number> = ko.observable( 12 );
+	isLineSpaceEnabled: KnockoutObservable<boolean> = ko.observable( false );
 
 	convertTable: string[][];
 
 	constructor()
 	{
 		this.convertTable = this.createConvertTable(
-			"a-zA-Z0-9 ーｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾜｦﾝｧｨｩｪｫｬｭｮｯｰ･ﾞﾟ､、｡。,，.．:：;；!！?？“”()（）「」｢｣『』[]［］{}｛｝〔〕<>〈〉《》【】‥…￩￪￫￬←↑→↓↖↗↘↙⇅⇄⇇⇈⇉⇊⇦⇧⇨⇩☜☝☞☟👈👆👉👇↼↾⇁⇃↽↿⇀⇂⇠⇡⇢⇣⇐⇑⇒⇓⇖⇗⇘⇙⇔⇕↤↥↦↧↞↟↠↡⬅⬆➡⬇─│┌┐┘└├┬┤┴━┃┏┓┛┗┣┳┫┻┠┯┨┷┝┰┥┸┿╂",
-			"ａ-ｚＡ-Ｚ０-９　｜アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨワヲンァィゥェォャュョッ｜・゛゜︑︑︒︒︐︐．．︓︓︔︔︕︕︖︖〝〟︵︶︵︶﹁﹂﹁﹂﹃﹄﹇﹈﹇﹈︷︸︷︸︹︺︿﹀︿﹀︽︾︻︼︰︙￪￫￬￩↑→↓←↗↘↙↖⇄⇅⇈⇉⇊⇇⇧⇨⇩⇦☝☞☟☜👆👉👇👈↾⇁⇃↼↿⇀⇂↽⇡⇢⇣⇠⇑⇒⇓⇐⇗⇘⇙⇖⇕⇔↥↦↧↤↟↠↡↞⬆➡⬇⬅│─┐┘└┌┬┤┴├┃━┓┛┗┏┳┫┻┣┯┨┷┠┰┥┸┝╂┿" );
+			"a-zA-Z0-9 ーｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾜｦﾝｧｨｩｪｫｬｭｮｯｰ･ﾞﾟ､、｡。,，.．:：;；!！?？“”<>＜＞∧∨⋀⋁()（）「」｢｣『』[]［］{}｛｝〔〕〈〉《》【】‥…⋮⋯⋰⋱￩￪￫￬←↑→↓↖↗↘↙↔↕⇅⇄⇵⇆⇇⇈⇉⇊⇦⇧⇨⇩☜☝☞☟👈👆👉👇↼↾⇁⇃↽↿⇀⇂⇠⇡⇢⇣⇐⇑⇒⇓⇖⇗⇘⇙⇔⇕↤↥↦↧↞↟↠↡⬅⬆➡⬇─│┌┐┘└├┬┤┴━┃┏┓┛┗┣┳┫┻┠┯┨┷┝┰┥┸┿╂┍┒┙┖╼╽┎┑┚┕╾╿╴╵╷╶╸╹╻╺┈┄╌┉┅╍┊┆╎┋┇╏╭╮╯╰╔╗╝╚╒╕╜╙╠╦╣╩╟╤╢╧▬▮◀▲▶▼◂▴▸▾▭▯◁△▷▽◃▵▹▿◐◓◑◒◜◝◞◟◢◣◤◥◰◳◲◱◸◹◿◺",
+			"ａ-ｚＡ-Ｚ０-９　｜アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨワヲンァィゥェォャュョッ｜・゛゜︑︑︒︒︐︐．．︓︓︔︔︕︕︖︖〝〟⋀⋁⋀⋁＞＜＞＜︵︶︵︶﹁﹂﹁﹂﹃﹄﹇﹈﹇﹈︷︸︷︸︹︺︿﹀︽︾︻︼︰︙⋯⋮⋱⋰￪￫￬￩↑→↓←↗↘↙↖↕↔⇄⇅⇆⇵⇈⇉⇊⇇⇧⇨⇩⇦☝☞☟☜👆👉👇👈↾⇁⇃↼↿⇀⇂↽⇡⇢⇣⇠⇑⇒⇓⇐⇗⇘⇙⇖⇕⇔↥↦↧↤↟↠↡↞⬆➡⬇⬅│─┐┘└┌┬┤┴├┃━┓┛┗┏┳┫┻┣┯┨┷┠┰┥┸┝╂┿┒┙┖┍╽╾┑┚┕┎╿╼╵╷╶╴╹╻╺╸┊┆╎┋┇╏┈┄╌┉┅╍╮╯╰╭╗╝╚╔╕╜╙╒╦╣╩╠╤╢╧╟▮▬▲▶▼◀▴▸▾◂▯▭△▷▽◁▵▹▿◃◓◑◒◐◝◞◟◜◣◤◥◢◳◲◱◰◹◿◺◸" );
 	}
 
 	convert( from: string ): string
 	{
-		var ret = this.templateTopLeftCorner + this.templateTopCenter + this.templateTopRightCorner + this.templateNewLine;
-
-		var charArray = TextSupport.getCharArray( from );
-		for( var i in charArray )
+		var ret = "";
+		var characterArray = this.preprocess( from );
+		var lineTextArray = this.lie( characterArray );
+		var lineLength = characterArray.length;
+		if( this.isLineSpaceEnabled() )
 		{
-			ret += this.templateLeft + this.normalize( charArray[i] ) + this.templateRight + this.templateNewLine;
+			lineLength += ( lineLength - 1 ) / 2;
 		}
+		var addHalfSpace = false;
+		if( ( this.templateTop() != this.templateTopCenter() || this.templateBottom() != this.templateBottomCenter() ) && lineLength % 2 != 1 )
+		{
+			++lineLength;
+			addHalfSpace = true;
+		}
+		var lineIsEven = lineTextArray.length % 2 == 0;
+		var addQuarterSpace = Math.floor( lineLength ) != lineLength;
 
-		ret += this.templateBottomLeftCorner + this.templateBottomCenter + this.templateBottomRightCorner;
+		ret += this.templateTopLeftCorner();
+		for( var i = 0; i < lineLength; ++i )
+		{
+			ret += i == Math.ceil( ( lineLength - 1 ) / 2 ) ? this.templateTopCenter() : this.templateTop();
+		}
+		ret += this.templateTopRightCorner() + this.templateNewLine;
+		for( var i = 0; i < lineTextArray.length; ++i )
+		{
+			var center = i == Math.ceil( ( lineTextArray.length - 1 ) / 2 );
+			ret += center ? this.templateLeftCenter() : this.templateLeft();
+			if( addHalfSpace )
+			{
+				ret += this.templateHalfSpace;
+			}
+			if( addQuarterSpace )
+			{
+				ret += this.templateQuarterSpace;
+			}
+			ret += lineTextArray[i];
+			if( addQuarterSpace )
+			{
+				ret += this.templateQuarterSpace;
+			}
+			if( addHalfSpace )
+			{
+				ret += this.templateHalfSpace;
+			}
+			ret += center ? this.templateRightCenter() : this.templateRight();
+			ret += this.templateNewLine;
+		}
+		if( lineIsEven )
+		{
+			ret += this.templateLeft();
+			if( addHalfSpace )
+			{
+				ret += this.templateHalfSpace;
+			}
+			if( addQuarterSpace )
+			{
+				ret += this.templateQuarterSpace;
+			}
+			for( var i = 0; i < characterArray.length; ++i )
+			{
+				ret += this.templateFullSpace;
+			}
+			if( addQuarterSpace )
+			{
+				ret += this.templateQuarterSpace;
+			}
+			if( addHalfSpace )
+			{
+				ret += this.templateHalfSpace;
+			}
+			ret += this.templateRight() + this.templateNewLine;
+		}
+		ret += this.templateBottomLeftCorner();
+		for( var i = 0; i < lineLength; ++i )
+		{
+			ret += i == Math.ceil( ( lineLength - 1 ) / 2 ) ? this.templateBottomCenter() : this.templateBottom();
+		}
+		ret += this.templateBottomRightCorner();
 		return ret;
 	}
 
-	private normalize( from: string ): string
+	private preprocess( text: string ): string[][]
+	{
+		var ret: string[][] = [];
+		var charArray = TextSupport.getCharArray( text );
+
+		var lineArray: string[] = [];
+		for( var i = 0; i < charArray.length; ++i )
+		{
+			lineArray.push( this.convertToVerticalCharactor( charArray[i] ) );
+			if( ( i + 1 ) % this.maximumCharactersOfALine() == 0 )
+			{
+				ret.push( lineArray );
+				lineArray = [];
+			}
+		}
+		if( lineArray.length != 0 )
+		{
+			ret.push( lineArray );
+		}
+		return ret;
+	}
+
+	private lie( preprocessTextArray: string[][] ): string[]
+	{
+		var ret: string[] = [];
+		for( var i = 0; i < this.maximumCharactersOfALine(); ++i )
+		{
+			var lineText = "";
+			for( var j = preprocessTextArray.length - 1; j >= 0; --j )
+			{
+				var line = preprocessTextArray[j];
+				lineText += line.length > i ? line[i] : this.templateFullSpace;
+				if( this.isLineSpaceEnabled() && j != 0 )
+				{
+					lineText += this.templateHalfSpace
+				}
+			}
+			ret.push( lineText );
+		}
+		return ret;
+	}
+
+	private convertToVerticalCharactor( text: string ): string
 	{
 		for( var i in this.convertTable )
 		{
 			var fromTo = this.convertTable[i];
-			if( from == fromTo[0] )
+			if( text == fromTo[0] )
 			{
 				return fromTo[1];
 			}
 		}
-		return from;
+		return text;
 	}
 
 	private createConvertTable( from: string, to: string ): string[][]
@@ -95,7 +215,5 @@ class LeftRightToTopBottomConverter
 		return table;
 	}
 
-	setTemplateLeft( value: string ): void { this.templateLeft = value; }
-	setTemplateRight( value: string ): void { this.templateRight = value; }
 	setTemplateNewLine( value: string ): void { this.templateNewLine = value; }
 }
